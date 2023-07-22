@@ -8,8 +8,9 @@ namespace NeuralNetwork
 {
     public class Neuron
     {
-        double bias { get; set; }
-        Dendrite[] dendrites { get; set; }
+        internal double bias { get; set; }
+        internal Dendrite[] dendrites { get; set; }
+
         public double Output { get; set; }
         public double Input { get; private set; }
         public ActivationFunction Activation { get; set; }
@@ -51,6 +52,7 @@ namespace NeuralNetwork
             }
 
             return Activation.Function(finalOutput);
+            
         }
     }
 }
