@@ -13,6 +13,10 @@ namespace NeuralNetwork
         public int InputCount => Layers[0].Neurons.Length;
         public int OutputCount => Layers[Layers.Length - 1].Neurons.Length;
 
+        private double min;
+        private double max;
+
+
         public NeuralNetwork(ActivationFunction activation, ErrorFunction errorFunc, params int[] neuronsPerLayer)
         {
             if (neuronsPerLayer == null || neuronsPerLayer.Length < 2)
@@ -31,12 +35,32 @@ namespace NeuralNetwork
             }
         }
 
+        public NeuralNetwork(ActivationFunction activation, ErrorFunction errorFunc, double min, double max, params int[] neuronsPerLayer)
+            : this(activation, errorFunc, neuronsPerLayer)
+        {
+            this.min = min;
+            this.max = max;
+        }
+
         public void Randomize(Random random, double min, double max)
         {
             for (int i = 0; i < Layers.Length; i++)
             {
                 Layers[i].Randomize(random, min, max);
             }
+        }
+
+        public void Randomize(Random random)
+        {
+            if(min == null)
+            {
+                throw new Exception("There is no min");
+            }
+            if(max == null)
+            {
+                throw new Exception("There is no max");
+            }
+            Randomize(random, min, max);
         }
 
         public double[] Compute(double[] inputs)
@@ -62,9 +86,9 @@ namespace NeuralNetwork
 
         public double GetError(double[] inputs, double[] desiredOutputs)
         {
-            if (desiredOutputs == null || desiredOutputs.Length != OutputCount) 
-            { 
-                throw new Exception("Desired outputs must be the same length as output count"); 
+            if (desiredOutputs == null || desiredOutputs.Length != OutputCount)
+            {
+                throw new Exception("Desired outputs must be the same length as output count");
             }
 
             double error = 0;
@@ -76,7 +100,7 @@ namespace NeuralNetwork
                 error += errorFunc.Function(outputs[i], desiredOutputs[i]);
             }
 
-            return error; 
+            return error;
         }
     }
 }
